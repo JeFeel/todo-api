@@ -1,4 +1,4 @@
-package com.example.todo.todoapi.exception;
+package com.example.todo.exception;
 
 
 import lombok.NoArgsConstructor;
