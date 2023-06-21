@@ -1,6 +1,7 @@
 package com.example.todo.userapi.api;
 
 import com.example.todo.auth.TokenUserInfo;
+import com.example.todo.aws.S3Service;
 import com.example.todo.exception.DuplicatedEmailException;
 import com.example.todo.exception.NoRegisteredArgumentsException;
 import com.example.todo.userapi.dto.request.LoginRequestDTO;
@@ -33,6 +34,7 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
+    private final S3Service s3Service;
 
     // 이메일 중복확인 요청 처리
     // GET: /api/auth/check?email=zzzz@xxx.com
@@ -206,5 +208,23 @@ public class UserController {
 
     }
 
+
+    // s3에서 불러온 프로필 사진 처리
+    @GetMapping("/load-s3")
+    public ResponseEntity<?> loadS3(
+            @AuthenticationPrincipal TokenUserInfo userInfo
+    ){
+        log.info("/api/auth/load-s3 GET - user: {} ", userInfo);
+
+        try {
+            String profilePath = userService.getProfilePath(userInfo.getUserId());
+            return ResponseEntity.ok().body(profilePath);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
+    }
 
 }
